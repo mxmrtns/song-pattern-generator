@@ -4,89 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Widget Template</title>
+  <meta name="author" content="Max Mertens">
+  <title>Song Pattern Generator</title>
 </head>
 
 <body>
   <div id="root"></div>
 
-  <div class="container row">
 
-    <label class="input">
-      <span>
-        <div class="icon icon--tidy-up-list-vertical"></div>
-      </span>
-      <input type="number" min="1" max="10" value="2" class="slider" id="rowSlider" name="rowSlider" oninput="update()">
-    </label>
-
-    <label class="input">
-      <span>
-        <div class="icon icon--tidy-up-list-horizontal"></div>
-      </span>
-      <input type="number" min="1" max="10" value="6" class="slider" id="colSlider" name="colSlider" oninput="update()">
-    </label>
-
-  </div>
-
-
-  <div class="container col">
-    <label for="colorPillar">Color Pillar</label>
-
-    <div class="colorSelect row">
-
-      <div class="colorBox purple-noise"></div>
-
-      <select name="colorPillar" id="colorPillar" oninput="colorBoxUpdate(this)">
-        <option value='0.439 0.298 0.996'>Reverb Blue</option>
-        <option value="0.925 0.89 0.815">Vanila Phaser</option>
-        <option value="0.945 0.337 0.137">Orange Fuzz</option>
-        <option value='0.27 0 0.45' selected>Purple Noise</option>
-        <option value="0.803 0.619 0.235">Gold Tuner</option>
-        <option value="0 0 0">Black</option>
-      </select>
-
-    </div>
-  </div>
-
-
-  <div class="container col">
-    <label for="colorBubble">Color Bubble</label>
-
-    <div class="colorSelect row">
-
-      <div class="colorBox reverb-blue"></div>
-
-      <select name="colorBubble" id="colorBubble" oninput="colorBoxUpdate(this)">
-        <option value='0.439 0.298 0.996' selected>Reverb Blue</option>
-        <option value="0.925 0.89 0.815">Vanila Phaser</option>
-        <option value="0.945 0.337 0.137">Orange Fuzz</option>
-        <option value='0.27 0 0.45'>Purple Noise</option>
-        <option value="0.803 0.619 0.235">Gold Tuner</option>
-        <option value="0 0 0">Black</option>
-      </select>
-
-    </div>
-  </div>
-
-
-  <div class="container col">
-    <label for="colorVector">Color Vector</label>
-
-    <div class="colorSelect row">
-
-      <div class="colorBox orange-fuzz"></div>
-
-      <select name="colorVector" id="colorVector" oninput="colorBoxUpdate(this)">
-        <option value='0.439 0.298 0.996'>Reverb Blue</option>
-        <option value="0.925 0.89 0.815">Vanila Phaser</option>
-        <option value="0.945 0.337 0.137" selected>Orange Fuzz</option>
-        <option value='0.27 0 0.45'>Purple Noise</option>
-        <option value="0.803 0.619 0.235">Gold Tuner</option>
-        <option value="0 0 0">Black</option>
-      </select>
-
-    </div>
-  </div>
 
 
   <div class="container row">
@@ -99,13 +24,9 @@
 
 
 
-
-
-
-
   <script type="module" src="./main.tsx"></script>
 
-
+  
   <script>
 
     function colorBoxUpdate(elem) {

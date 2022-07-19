@@ -1,16 +1,50 @@
+
 import React, { useRef } from "react";
+
 import logoPng from "./logo.png";
 import logoSvg from "./logo.svg?raw";
 import Logo from "./Logo";
 import "./App.css";
 import "../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css"
-import { selectMenu, disclosure } from 'figma-plugin-ds';
+
+import InputNumber from "./modules/InputNumber";
+import ColorSelect from "./modules/ColorSelect";
 
 
-    selectMenu.init(); //initiates the select menu component
-    disclosure.init(); //initiates the disclosure component
+import p5 from 'p5';
+import { mySketch } from './p5Sketch'
+
+
+
+
 
 function App() {
+
+  new p5(mySketch);
+
+  return (
+    <div>
+      <div className="container row">
+        <InputNumber value="2" class="icon icon--tidy-up-list-horizontal" msgtype='rows'/>
+        <InputNumber value="6" class="icon icon--tidy-up-list-vertical" msgtype='cols'/>
+      </div>
+      <div className="container col">
+        <label for="colorPillar">Color Pillar</label>
+        <ColorSelect msgtype='colorPillar' value='0.27 0 0.45'/>
+      </div>
+      <div className="container col">
+        <label for="colorPillar">Color Bubble</label>
+        <ColorSelect msgtype='colorBubble' value='0.439 0.298 0.996'/>
+      </div>
+      <div className="container col">
+        <label for="colorPillar">Color Vector</label>
+        <ColorSelect msgtype='colorVector' value='0.945 0.337 0.137'/>
+      </div>
+
+    </div>
+  );
+  
+
   // const inputRef = useRef<HTMLInputElement>(null);
 
   // const onCreate = () => {
@@ -42,8 +76,6 @@ function App() {
   // );
 
 }
-
-
 
 
 export default App;
