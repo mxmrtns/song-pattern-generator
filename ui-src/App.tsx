@@ -1,14 +1,12 @@
 
 import React, { useRef } from "react";
 
-import logoPng from "./logo.png";
-import logoSvg from "./logo.svg?raw";
-import Logo from "./Logo";
 import "./App.css";
 import "../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css"
 
 import InputNumber from "./modules/InputNumber";
 import ColorSelect from "./modules/ColorSelect";
+import Button from "./modules/Button";
 
 
 import p5 from 'p5';
@@ -40,7 +38,10 @@ function App() {
         <label for="colorPillar">Color Vector</label>
         <ColorSelect msgtype='colorVector' value='0.945 0.337 0.137'/>
       </div>
-
+      <div className="container row">
+        <Button msgtype='clone' label="Save Copy" addClasses="button--secondary" />
+        <Button msgtype='reload' label="Reload" addClasses="button--primary icon-button-padding" iconClass="icon--swap icon--white"/>
+      </div>
     </div>
   );
   

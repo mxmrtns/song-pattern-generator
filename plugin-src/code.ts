@@ -53,9 +53,18 @@ figma.ui.onmessage = (msg) => {
     updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
   }
 
+  if (msg.type == 'reload') {
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
+  }
+
+  if (msg.type == 'clone') {
+    frame.clone();
+    frame.x = 100;
+    frame.name = "saved-Song"
+  }
 
 
-  function updateCanvas (rows, cols, colorValPillar, cBubble, cVector) {
+  function updateCanvas (rows, cols, colorValPillar, colorValBubble, colorValVector) {
 
     // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
     const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
@@ -144,9 +153,9 @@ figma.ui.onmessage = (msg) => {
           bubble.fills = [{
             type: 'SOLID',
             color: {
-              r: Number(_colorValBubble[0]),
-              g: Number(_colorValBubble[1]),
-              b: Number(_colorValBubble[2])
+              r: Number(colorValBubble[0]),
+              g: Number(colorValBubble[1]),
+              b: Number(colorValBubble[2])
             }
           }];
 
@@ -207,9 +216,9 @@ figma.ui.onmessage = (msg) => {
         vector.strokes = [{
           type: 'SOLID',
           color: {
-            r: Number(_colorValVector[0]),
-            g: Number(_colorValVector[1]),
-            b: Number(_colorValVector[2])
+            r: Number(colorValVector[0]),
+            g: Number(colorValVector[1]),
+            b: Number(colorValVector[2])
           }
         }];
 
@@ -228,26 +237,14 @@ figma.ui.onmessage = (msg) => {
   }
 
 
-
-
-
-
-
-
-  if (msg.type == 'clone') {
-    console.log("clone");
-    frame.clone();
-    frame.x = 100;
-    frame.name = "saved-Song"
-  }
-
-
 };
 
 
 
 
-function getRandomInt(min, max) {
+
+
+function getRandomInt(min:number, max:number) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;

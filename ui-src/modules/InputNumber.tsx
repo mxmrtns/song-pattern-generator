@@ -1,9 +1,10 @@
 
 import React from "react";
 
-class InputNumber extends React.Component {
+class InputNumber 
+  extends React.Component<any, any> {
 
-    constructor(props) {
+    constructor(props: any) {
       super(props);
       this.state = {
         class: props.class,

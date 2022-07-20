@@ -77,7 +77,7 @@ label.input:hover {
 }
 
 label.input:focus-within {
-  border: solid 1px blue;
+  border: solid 1px var(--blue);
 }
 
 .input .icon {
@@ -114,7 +114,7 @@ label.input:focus-within {
 .orange-fuzz { background-color: #F15623; }
 .purple-noise { background-color: #460073; }
 .reverb-blue { background-color: #704CFE; }
-.vanilla-phaser { background-color: #ECE3D0; }
+.vanila-phaser { background-color: #ECE3D0; }
 .gold-tuner { background-color: #CD9E3C; }
 .black { background-color: #000000; }
 
