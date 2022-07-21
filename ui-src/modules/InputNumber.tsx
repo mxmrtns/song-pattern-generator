@@ -36,7 +36,7 @@ class InputNumber
           <span>
             <div className={this.state.class}></div>
           </span>
-          <input type="number" value={this.state.value} onChange={this.handleChange} min="1" max="10" />
+          <input type="number" value={this.state.value} onChange={this.handleChange} min="1" max="20" />
         </label> 
       );
     }

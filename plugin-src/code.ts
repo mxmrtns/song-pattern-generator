@@ -9,8 +9,8 @@ const gap = padding / 2;
 const pillarW = 12;
 const pillarH = 24;
 
-let bubblePos = [];
-let vertexPos = [];
+let bubblePos: any[][] = [];
+let vertexPos: any[] = [];
 
 
 let frame: FrameNode;
@@ -64,7 +64,7 @@ figma.ui.onmessage = (msg) => {
   }
 
 
-  function updateCanvas (rows, cols, colorValPillar, colorValBubble, colorValVector) {
+  function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorValBubble: any[], colorValVector: any[]) {
 
     // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
     const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
@@ -102,7 +102,7 @@ figma.ui.onmessage = (msg) => {
         let calcRTop = ((0 + (i + l) * 100) % 200);
         let calcRBot = ((100 + (i + l) * 100) % 200);
 
-        const pillar = figma.createRectangle();
+        const pillar: RectangleNode = figma.createRectangle();
         pillar.resize(pillarW, pillarH);
         pillar.topLeftRadius = calcRTop;
         pillar.topRightRadius = calcRTop;
@@ -110,6 +110,7 @@ figma.ui.onmessage = (msg) => {
         pillar.bottomRightRadius = calcRBot;
         pillar.x = calcX;
         pillar.y = calcY;
+        pillar.name = "Bar";
 
         pillar.fills = [{
           type: 'SOLID',
@@ -146,7 +147,8 @@ figma.ui.onmessage = (msg) => {
         }
 
         if (Math.random() < 0.5) {
-          const bubble = figma.createEllipse();
+          const bubble: EllipseNode = figma.createEllipse();
+          bubble.name = "Beat";
           bubble.x = bubblePos[i][l].x;
           bubble.y = bubblePos[i][l].y;
           bubble.resize(pillarW, pillarW)
@@ -175,7 +177,7 @@ figma.ui.onmessage = (msg) => {
 
         let randomVertex = getRandomInt(0, vertexPos.length - 1);
 
-        const vector = figma.createVector();
+        const vector: VectorNode = figma.createVector();
         vector.vectorNetwork = {
           // The vertices of the triangle
           vertices: [{
@@ -222,9 +224,14 @@ figma.ui.onmessage = (msg) => {
           }
         }];
 
+        
+        const newV: PolygonNode = vector.outlineStroke();
+        newV.name = "Fluid Beat"
 
-        frame.appendChild(vector);
-        nodes.push(vector);
+        vector.remove();
+
+        frame.appendChild(newV);
+        nodes.push(newV);
 
 
         figma.currentPage.selection = nodes;
