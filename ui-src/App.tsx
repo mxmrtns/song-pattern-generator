@@ -1,16 +1,19 @@
 
-import React, { useRef } from "react";
+import React, { useState } from "react";
+import Slider from '@mui/material/Slider';
 
 import "./App.css";
 import "../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css"
 
 import InputNumber from "./modules/InputNumber";
 import ColorSelect from "./modules/ColorSelect";
+import ButtonClass from "./modules/ButtonClass";
 import Button from "./modules/Button";
+import Stepper from "./modules/stepper";
 
 
-import p5 from 'p5';
-import { mySketch } from './p5Sketch'
+
+import P5Component from './p5Sketch'
 
 
 
@@ -18,10 +21,12 @@ import { mySketch } from './p5Sketch'
 
 function App() {
 
-  new p5(mySketch);
+  const [beatFreq, setBeatFreq] = useState(2);
+  const [beatTresh, setBeatTresh] = useState(4);
 
   return (
     <div>
+
       <div className="container row">
         <InputNumber value="2" class="icon icon--tidy-up-list-horizontal" msgtype='rows'/>
         <InputNumber value="6" class="icon icon--tidy-up-list-vertical" msgtype='cols'/>
@@ -38,13 +43,31 @@ function App() {
         <label for="colorPillar">Color Vector</label>
         <ColorSelect msgtype='colorVector' value='0.945 0.337 0.137'/>
       </div>
-      <div className="container row">
-        <Button msgtype='clone' label="Save Copy" addClasses="button--secondary" />
-        <Button msgtype='reload' label="Reload" addClasses="button--primary icon-button-padding" iconClass="icon--swap icon--white"/>
+
+      
+
+
+
+      <div className="container col">
+        <P5Component beatFreq={beatFreq} beatTresh={beatTresh} />
+        <div className="row">
+          <Stepper state={beatFreq} iconClass="icon--tidy-up-list-vertical" msgType="beatFreq" setState={setBeatFreq} />
+          <Stepper state={beatTresh} iconClass="icon--tidy-up-list-horizontal" msgType="beatTresh" setState={setBeatTresh}  />
+        </div>
+
+        {/* <Button label="Reload" cNames="button--primary icon-button-padding" msgType="reload" setRandomBeat={setRandomBeat}/> */}
+
       </div>
+
+
     </div>
   );
   
+  //<Button label="Save Copy" classnames="Save Copy" iconClass="" msgType="clone" setRandomBeat={setRandomBeat}/> 
+
+          
+  // { Button("Save Copy", "button--secondary", "", "clone") setRandomBeat={setRandomBeat} }
+  // { Button("Reload", "button--primary icon-button-padding", "icon--swap icon--white", "reload") }
 
   // const inputRef = useRef<HTMLInputElement>(null);
 

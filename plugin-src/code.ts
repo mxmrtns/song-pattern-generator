@@ -1,5 +1,5 @@
 
-figma.showUI(__html__, {width: 240, height: 500 });
+figma.showUI(__html__, {width: 240, height: 800 });
 
 figma.ui.resize(240, 500);
 
@@ -23,7 +23,8 @@ let _rows = 2,
     _colorValVector = [0.945, 0.337, 0.137];
 
 
-
+let beatTreshVal;
+let beatTresh: number;
 
 figma.ui.onmessage = (msg) => {
 
@@ -61,6 +62,13 @@ figma.ui.onmessage = (msg) => {
     frame.clone();
     frame.x = 100;
     frame.name = "saved-Song"
+  }
+
+  if (msg.type == 'beatTresh') {
+    beatTreshVal = msg.number;
+    beatTresh = 0.1 * beatTreshVal;
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
+    console.log(beatTresh);
   }
 
 
@@ -124,7 +132,7 @@ figma.ui.onmessage = (msg) => {
         nodes.push(pillar);
 
 
-        //Bubbles ——————————————————————————————————————————————————
+        //Beats ——————————————————————————————————————————————————
 
         // X und Y positon der Bubbles berechnen
         let calcBubbleX = l * (gap + pillarW) + padding;
@@ -146,7 +154,7 @@ figma.ui.onmessage = (msg) => {
           };
         }
 
-        if (Math.random() < 0.5) {
+        if (Math.random() < beatTresh) {
           const bubble: EllipseNode = figma.createEllipse();
           bubble.name = "Beat";
           bubble.x = bubblePos[i][l].x;
@@ -170,7 +178,7 @@ figma.ui.onmessage = (msg) => {
       }
     }
 
-    //Vector ——————————————————————————————————————————————————
+    //Fluid Beats ——————————————————————————————————————————————————
 
     for (let i = 0; i < 4; i++) {
       if (Math.random() < 0.5) {

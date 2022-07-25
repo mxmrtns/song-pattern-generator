@@ -1,58 +1,36 @@
-
-import React from "react";
+import React, { Dispatch, SetStateAction } from 'react';
 import classNames from "classnames";
 
-class Button
-  extends React.Component<any, any> {
 
-    constructor(props: any) {
-      super(props);
-      this.state = {
-        msgtype: props.msgtype,
-        label: props.label,
-        addClasses: props.addClasses,
-        iconClass: props.iconClass
-      };
-      this.handleChange = this.handleChange.bind(this);
-    }
-  
 
+
+export default function Button ({ label, cNames, msgType, setRandomBeat }) {
+
+    function handleClick() {
+
+        setRandomBeat('changed');
+
+        parent.postMessage({
+            pluginMessage: {
+              type: msgType
+            }
+          }, '*');
     
-    handleChange() {
-
-      const button = 'pressed';
-
-      parent.postMessage({
-        pluginMessage: {
-          type: this.state.msgtype,
-          button
-        }
-      }, '*');
-
     }
 
-    render() {
-      return (
-        <button
-          className={classNames(this.props.addClasses, {
-            button: true,
-          })}
-          onClick={this.handleChange}
+    return (
+        <button 
+            className={classNames(cNames,"button", {})}
+            onClick={() => handleClick()}
         >
-          {this.props.iconClass &&
-            <div 
-              className={classNames(this.props.iconClass, {
-                icon: true,
-              })}
-            ></div>
-          }
 
-          {this.state.label}
+            {label}
         </button>
+    )
 
-      );
-    }
+}
 
-  }
 
-  export default Button;
+// {iconClass &&
+//     <div className={classNames(iconClass,"icon", {})}></div>
+// }
