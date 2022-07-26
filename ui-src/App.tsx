@@ -28,8 +28,8 @@ function App() {
     <div>
 
       <div className="container row">
-        <InputNumber value="2" class="icon icon--tidy-up-list-horizontal" msgtype='rows'/>
-        <InputNumber value="6" class="icon icon--tidy-up-list-vertical" msgtype='cols'/>
+        <InputNumber value="2" class="icon icon--tidy-up-list-vertical" msgtype='rows'/>
+        <InputNumber value="6" class="icon icon--tidy-up-list-horizontal" msgtype='cols'/>
       </div>
       <div className="container col">
         <label for="colorPillar">Color Pillar</label>
@@ -47,16 +47,16 @@ function App() {
       
 
 
-
       <div className="container col">
         <P5Component beatFreq={beatFreq} beatTresh={beatTresh} />
         <div className="row">
           <Stepper state={beatFreq} iconClass="icon--tidy-up-list-vertical" msgType="beatFreq" setState={setBeatFreq} />
           <Stepper state={beatTresh} iconClass="icon--tidy-up-list-horizontal" msgType="beatTresh" setState={setBeatTresh}  />
         </div>
+      </div>
 
-        {/* <Button label="Reload" cNames="button--primary icon-button-padding" msgType="reload" setRandomBeat={setRandomBeat}/> */}
-
+      <div className="container row">
+        <Button label="Reload" cNames="button--primary icon-button-padding" iconClass="icon--swap icon--white" msgType="reload"/>
       </div>
 
 

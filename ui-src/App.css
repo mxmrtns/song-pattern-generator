@@ -25,14 +25,16 @@ body {
   border-bottom: 1px solid rgb(230, 230, 230);
 }
 
-.row {
+.row,.col {
+  width: 100%;
   display: flex;
+}
+.row {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
-.col { 
-  display: flex;
+.col {
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;

@@ -4,11 +4,9 @@ import classNames from "classnames";
 
 
 
-export default function Button ({ label, cNames, msgType, setRandomBeat }) {
+export default function Button ({ label, cNames, iconClass, msgType }) {
 
     function handleClick() {
-
-        setRandomBeat('changed');
 
         parent.postMessage({
             pluginMessage: {
@@ -23,6 +21,9 @@ export default function Button ({ label, cNames, msgType, setRandomBeat }) {
             className={classNames(cNames,"button", {})}
             onClick={() => handleClick()}
         >
+            {iconClass &&
+                <div className={classNames(iconClass,"icon", {})}></div>
+            }
 
             {label}
         </button>
@@ -31,6 +32,3 @@ export default function Button ({ label, cNames, msgType, setRandomBeat }) {
 }
 
 
-// {iconClass &&
-//     <div className={classNames(iconClass,"icon", {})}></div>
-// }

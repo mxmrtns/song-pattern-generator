@@ -1,7 +1,6 @@
 
-figma.showUI(__html__, {width: 240, height: 800 });
+figma.showUI(__html__, {width: 240, height: 650 });
 
-figma.ui.resize(240, 500);
 
 const padding = 4;
 const gap = padding / 2;
@@ -23,8 +22,7 @@ let _rows = 2,
     _colorValVector = [0.945, 0.337, 0.137];
 
 
-let beatTreshVal;
-let beatTresh: number;
+let beatTresh: number = 0.4;
 
 figma.ui.onmessage = (msg) => {
 
@@ -65,10 +63,8 @@ figma.ui.onmessage = (msg) => {
   }
 
   if (msg.type == 'beatTresh') {
-    beatTreshVal = msg.number;
-    beatTresh = 0.1 * beatTreshVal;
+    beatTresh = 0.1 * msg.number;
     updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
-    console.log(beatTresh);
   }
 
 
