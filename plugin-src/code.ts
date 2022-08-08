@@ -100,10 +100,13 @@ figma.ui.onmessage = (msg) => {
     }
 
     // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
-    const oldBars = figma.currentPage.findAll(node => node.type === "RECTANGLE" && node.name === "Bar");
+    const oldNodes = figma.currentPage.findAll(node =>
+      node.type === "RECTANGLE" && node.name === "Bar" ||
+      node.type === "ELLIPSE" && node.name === "Beat" ||
+      node.type === "VECTOR" && node.name === "Fluid Beat");
 
-    if (oldBars !== null) {
-      oldBars.forEach((bar) => bar.remove());
+    if (oldNodes !== null) {
+      oldNodes.forEach((nodeElement) => nodeElement.remove());
     } else { };
 
     // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
@@ -150,9 +153,9 @@ figma.ui.onmessage = (msg) => {
         //Beats ——————————————————————————————————————————————————
 
         // X und Y positon der Bubbles berechnen
-        let calcBubbleX = l * (gap + pillarW) + padding;
-        let calcBubbleYTop = i * (gap + pillarH) + padding;
-        let calcBubbleYBot = i * (gap + pillarH) + padding + pillarH - pillarW;
+        let calcBubbleX = calcX;
+        let calcBubbleYTop = calcY
+        let calcBubbleYBot = calcY + barHeight - barWidth
 
         //X und Y Pos in Object und Arry speichern
         if ((l + i) % 2 == 0) {
@@ -171,10 +174,10 @@ figma.ui.onmessage = (msg) => {
 
         if (Math.random() < beatTresh) {
           const bubble: EllipseNode = figma.createEllipse();
-          bubble.name = "Beat";
+          bubble.name = "Beat"
           bubble.x = bubblePos[i][l].x;
           bubble.y = bubblePos[i][l].y;
-          bubble.resize(pillarW, pillarW)
+          bubble.resize(barWidth, barWidth)
           bubble.fills = [{
             type: 'SOLID',
             color: {
@@ -186,7 +189,7 @@ figma.ui.onmessage = (msg) => {
 
           frame.appendChild(bubble);
           nodes.push(bubble);
-        } else {};
+        } else { };
 
         vertexPos.push(bubblePos[i][l]);
 
@@ -204,15 +207,15 @@ figma.ui.onmessage = (msg) => {
         vector.vectorNetwork = {
           // The vertices of the triangle
           vertices: [{
-              x: vertexPos[randomVertex].x + pillarW / 2,
-              y: vertexPos[randomVertex].y + pillarW / 2,
-              strokeCap: "ROUND"
-            },
-            {
-              x: vertexPos[randomVertex + 1].x + pillarW / 2,
-              y: vertexPos[randomVertex + 1].y + pillarW / 2,
-              strokeCap: "ROUND"
-            },
+            x: vertexPos[randomVertex].x + barWidth / 2,
+            y: vertexPos[randomVertex].y + barWidth / 2,
+            strokeCap: "ROUND"
+          },
+          {
+            x: vertexPos[randomVertex + 1].x + barWidth / 2,
+            y: vertexPos[randomVertex + 1].y + barWidth / 2,
+            strokeCap: "ROUND"
+          },
           ],
 
           segments: [{
@@ -236,7 +239,7 @@ figma.ui.onmessage = (msg) => {
           }],
         }
 
-        vector.strokeWeight = pillarW;
+        vector.strokeWeight = barWidth;
 
         vector.strokes = [{
           type: 'SOLID',
