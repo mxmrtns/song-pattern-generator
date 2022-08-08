@@ -28,13 +28,13 @@ figma.ui.onmessage = (msg) => {
 
 
   if (msg.type == 'rows') {
-    _rows = msg.number;
-    updateCanvas(msg.number, _cols, _colorValPillar, _colorValBubble, _colorValVector);
+    _rows = parseInt(msg.number, 10);
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
   }
 
   if (msg.type == 'cols') {
-    _cols = msg.number;
-    updateCanvas(_rows, msg.number, _colorValPillar, _colorValBubble, _colorValVector)
+    _cols = parseInt(msg.number, 10);
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector)
   }
     
   if (msg.type == 'colorPillar') {
@@ -70,51 +70,70 @@ figma.ui.onmessage = (msg) => {
 
   function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorValBubble: any[], colorValVector: any[]) {
 
+    // Requires the user to create and select a frame first ——————————————————————————————————————————
+    const frame = figma.currentPage.selection[0] || null
+    if (!frame || frame.type !== "FRAME") {
+      figma.notify("Please select a target frame", {
+        error: true
+      })
+      return
+    }
+
+    // Creating and setting the size of the bars ————————————————————————————————————————————————————
+    let canvasHeight = frame.height
+    let canvasWidth = frame.width
+
+    let factor = canvasWidth / (6 + 14 * cols)
+
+    let barWidth = 12 * factor
+    let barHeight = (canvasHeight - (rows + 1) * 4 * factor) / rows
+
+    let verticalSpace = 4 * factor
+    let horizontalSpace = 2 * factor
+
+    // Check if bars fullfill the minimum height requirement ————————————————————————————————————————
+    if (barHeight < 24 * factor) {
+      figma.notify("Too many rows", {
+        error: true
+      })
+      return
+    }
+
     // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
-    const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
+    const oldBars = figma.currentPage.findAll(node => node.type === "RECTANGLE" && node.name === "Bar");
 
-    if (oldFrame !== null) {
-      oldFrame.remove();
-    } else {};
+    if (oldBars !== null) {
+      oldBars.forEach((bar) => bar.remove());
+    } else { };
 
-     // Creating and setting the size of the frame ————————————————————————————————————————————————————
-     frame = figma.createFrame();
-
-     let canvasHeight = padding * 2 + rows * pillarH + (rows - 1) * gap;
-     let canvasWidth = padding * 2 + cols * pillarW + (cols - 1) * gap;
- 
-     frame.x = 0
-     frame.y = 0
-     frame.name = "Song"
-     frame.constrainProportions = true;
-     frame.resize(canvasWidth, canvasHeight)
-
-
-         // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
+    // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
     const nodes: SceneNode[] = [];
 
-    for (let i = 0; i < rows; i++) {
+    for (let i = 0; i < cols; i++) {
 
       bubblePos[i] = [];
 
-      for (let l = 0; l < cols; l++) {
+      for (let l = 0; l < rows; l++) {
 
         //Pillars ——————————————————————————————————————————————————
-        let calcX = l * (pillarW + gap) + padding;
-        let calcY = i * (pillarH + gap) + padding;
-
-        let calcRTop = ((0 + (i + l) * 100) % 200);
-        let calcRBot = ((100 + (i + l) * 100) % 200);
+        let calcX = 4 * factor + i * (barWidth + horizontalSpace);
+        let calcY = 4 * factor + l * (barHeight + verticalSpace)
 
         const pillar: RectangleNode = figma.createRectangle();
-        pillar.resize(pillarW, pillarH);
-        pillar.topLeftRadius = calcRTop;
-        pillar.topRightRadius = calcRTop;
-        pillar.bottomLeftRadius = calcRBot;
-        pillar.bottomRightRadius = calcRBot;
+        pillar.resize(barWidth, barHeight);
+
         pillar.x = calcX;
         pillar.y = calcY;
         pillar.name = "Bar";
+
+        if (i % 2 == 0) {
+          pillar.topLeftRadius = 999
+          pillar.topRightRadius = 999
+
+        } else {
+          pillar.bottomLeftRadius = 999
+          pillar.bottomRightRadius = 999
+        }
 
         pillar.fills = [{
           type: 'SOLID',
@@ -238,8 +257,8 @@ figma.ui.onmessage = (msg) => {
         nodes.push(newV);
 
 
-        figma.currentPage.selection = nodes;
-        figma.viewport.scrollAndZoomIntoView(nodes);
+        // figma.currentPage.selection = nodes;
+        // figma.viewport.scrollAndZoomIntoView(nodes);
 
       } else {};
     }
