@@ -56,6 +56,7 @@ function App() {
       </div>
 
       <div className="container row">
+        <Button label="Save Copy" cNames="button--secondary" iconClass="" msgType="clone"/>
         <Button label="Reload" cNames="button--primary icon-button-padding" iconClass="icon--swap icon--white" msgType="reload"/>
       </div>
 
