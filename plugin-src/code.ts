@@ -26,7 +26,6 @@ let beatTresh: number = 0.4;
 
 figma.ui.onmessage = (msg) => {
 
-
   if (msg.type == 'rows') {
     _rows = msg.number;
     updateCanvas(msg.number, _cols, _colorValPillar, _colorValBubble, _colorValVector);
@@ -66,189 +65,212 @@ figma.ui.onmessage = (msg) => {
     beatTresh = 0.1 * msg.number;
     updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
   }
+};
 
 
-  function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorValBubble: any[], colorValVector: any[]) {
 
-    // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
-    const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
+function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorValBubble: any[], colorValVector: any[]) {
 
-    if (oldFrame !== null) {
-      oldFrame.remove();
-    } else {};
+  // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
+  const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
 
-     // Creating and setting the size of the frame ————————————————————————————————————————————————————
-     frame = figma.createFrame();
+  if (oldFrame !== null) {
+    oldFrame.remove();
+  } else {};
 
-     let canvasHeight = padding * 2 + rows * pillarH + (rows - 1) * gap;
-     let canvasWidth = padding * 2 + cols * pillarW + (cols - 1) * gap;
- 
-     frame.x = 0
-     frame.y = 0
-     frame.name = "Song"
-     frame.constrainProportions = true;
-     frame.resize(canvasWidth, canvasHeight)
+   // Creating and setting the size of the frame ————————————————————————————————————————————————————
+   frame = figma.createFrame();
 
+   let canvasHeight = padding * 2 + rows * pillarH + (rows - 1) * gap;
+   let canvasWidth = padding * 2 + cols * pillarW + (cols - 1) * gap;
 
-         // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
-    const nodes: SceneNode[] = [];
+   frame.x = 0
+   frame.y = 0
+   frame.name = "Song"
+   frame.constrainProportions = true;
+   frame.resize(canvasWidth, canvasHeight)
 
-    for (let i = 0; i < rows; i++) {
+       
+   // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
+  const nodes: SceneNode[] = [];
 
-      bubblePos[i] = [];
+  for (let i = 0; i < rows; i++) {
 
-      for (let l = 0; l < cols; l++) {
+    bubblePos[i] = [];
+    vertexPos[i] = [];
 
-        //Pillars ——————————————————————————————————————————————————
-        let calcX = l * (pillarW + gap) + padding;
-        let calcY = i * (pillarH + gap) + padding;
+    for (let l = 0; l < cols; l++) {
 
-        let calcRTop = ((0 + (i + l) * 100) % 200);
-        let calcRBot = ((100 + (i + l) * 100) % 200);
+      //Pillars ——————————————————————————————————————————————————
+      let calcX = l * (pillarW + gap) + padding;
+      let calcY = i * (pillarH + gap) + padding;
 
-        const pillar: RectangleNode = figma.createRectangle();
-        pillar.resize(pillarW, pillarH);
-        pillar.topLeftRadius = calcRTop;
-        pillar.topRightRadius = calcRTop;
-        pillar.bottomLeftRadius = calcRBot;
-        pillar.bottomRightRadius = calcRBot;
-        pillar.x = calcX;
-        pillar.y = calcY;
-        pillar.name = "Bar";
+      let calcRTop = ((0 + (i + l) * 100) % 200);
+      let calcRBot = ((100 + (i + l) * 100) % 200);
 
-        pillar.fills = [{
-          type: 'SOLID',
-          color: {
-            r: Number(colorValPillar[0]),
-            g: Number(colorValPillar[1]),
-            b: Number(colorValPillar[2])
-          }
-        }];
-        frame.appendChild(pillar);
-        nodes.push(pillar);
+      const pillar: RectangleNode = figma.createRectangle();
+      pillar.resize(pillarW, pillarH);
+      pillar.topLeftRadius = calcRTop;
+      pillar.topRightRadius = calcRTop;
+      pillar.bottomLeftRadius = calcRBot;
+      pillar.bottomRightRadius = calcRBot;
+      pillar.x = calcX;
+      pillar.y = calcY;
+      pillar.name = "Bar";
 
-
-        //Beats ——————————————————————————————————————————————————
-
-        // X und Y positon der Bubbles berechnen
-        let calcBubbleX = l * (gap + pillarW) + padding;
-        let calcBubbleYTop = i * (gap + pillarH) + padding;
-        let calcBubbleYBot = i * (gap + pillarH) + padding + pillarH - pillarW;
-
-        //X und Y Pos in Object und Arry speichern
-        if ((l + i) % 2 == 0) {
-          // Bottom
-          bubblePos[i][l] = {
-            x: calcBubbleX,
-            y: calcBubbleYBot
-          };
-        } else {
-          // Top
-          bubblePos[i][l] = {
-            x: calcBubbleX,
-            y: calcBubbleYTop
-          };
+      pillar.fills = [{
+        type: 'SOLID',
+        color: {
+          r: Number(colorValPillar[0]),
+          g: Number(colorValPillar[1]),
+          b: Number(colorValPillar[2])
         }
+      }];
+      frame.appendChild(pillar);
+      nodes.push(pillar);
 
-        if (Math.random() < beatTresh) {
-          const bubble: EllipseNode = figma.createEllipse();
-          bubble.name = "Beat";
-          bubble.x = bubblePos[i][l].x;
-          bubble.y = bubblePos[i][l].y;
-          bubble.resize(pillarW, pillarW)
-          bubble.fills = [{
-            type: 'SOLID',
-            color: {
-              r: Number(colorValBubble[0]),
-              g: Number(colorValBubble[1]),
-              b: Number(colorValBubble[2])
-            }
-          }];
 
-          frame.appendChild(bubble);
-          nodes.push(bubble);
-        } else {};
+      //Beats ——————————————————————————————————————————————————
 
-        vertexPos.push(bubblePos[i][l]);
+      // X und Y positon der Bubbles berechnen
+      let calcBubbleX = l * (gap + pillarW) + padding;
+      let calcBubbleYTop = i * (gap + pillarH) + padding;
+      let calcBubbleYBot = i * (gap + pillarH) + padding + pillarH - pillarW;
 
+      //X und Y Pos in Object und Arry speichern
+      if ((l + i) % 2 == 0) {
+        // Bottom
+        bubblePos[i][l] = {
+          x: calcBubbleX,
+          y: calcBubbleYBot
+        };
+      } else {
+        // Top
+        bubblePos[i][l] = {
+          x: calcBubbleX,
+          y: calcBubbleYTop
+        };
       }
-    }
 
-    //Fluid Beats ——————————————————————————————————————————————————
-
-    for (let i = 0; i < 4; i++) {
-      if (Math.random() < 0.5) {
-
-        let randomVertex = getRandomInt(0, vertexPos.length - 1);
-
-        const vector: VectorNode = figma.createVector();
-        vector.vectorNetwork = {
-          // The vertices of the triangle
-          vertices: [{
-              x: vertexPos[randomVertex].x + pillarW / 2,
-              y: vertexPos[randomVertex].y + pillarW / 2,
-              strokeCap: "ROUND"
-            },
-            {
-              x: vertexPos[randomVertex + 1].x + pillarW / 2,
-              y: vertexPos[randomVertex + 1].y + pillarW / 2,
-              strokeCap: "ROUND"
-            },
-          ],
-
-          segments: [{
-            start: 0,
-            tangentStart: {
-              x: 0,
-              y: 0
-            }, // optional
-            end: 1,
-            tangentEnd: {
-              x: 0,
-              y: 0
-            }, // optional
-          }],
-
-          regions: [{
-            windingRule: "NONZERO",
-            loops: [
-              [0]
-            ]
-          }],
-        }
-
-        vector.strokeWeight = pillarW;
-
-        vector.strokes = [{
+      if (Math.random() < beatTresh) {
+        const bubble: EllipseNode = figma.createEllipse();
+        bubble.name = "Beat";
+        bubble.x = bubblePos[i][l].x;
+        bubble.y = bubblePos[i][l].y;
+        bubble.resize(pillarW, pillarW)
+        bubble.fills = [{
           type: 'SOLID',
           color: {
-            r: Number(colorValVector[0]),
-            g: Number(colorValVector[1]),
-            b: Number(colorValVector[2])
+            r: Number(colorValBubble[0]),
+            g: Number(colorValBubble[1]),
+            b: Number(colorValBubble[2])
           }
         }];
 
-        
-        const newV: PolygonNode = vector.outlineStroke();
-        newV.name = "Fluid Beat"
-
-        vector.remove();
-
-        frame.appendChild(newV);
-        nodes.push(newV);
-
-
-        figma.currentPage.selection = nodes;
-        figma.viewport.scrollAndZoomIntoView(nodes);
-
+        frame.appendChild(bubble);
+        nodes.push(bubble);
       } else {};
+
+      // vertexPos.push(bubblePos[i][l]);
+
+      vertexPos[i].push({ 
+        x: calcBubbleX, 
+        y: calcBubbleYTop
+      });
+
+      vertexPos[i].push({ 
+        x: calcBubbleX, 
+        y: calcBubbleYBot
+      });
+
+
+      console.log(vertexPos.length);
+      console.log(vertexPos[0].length / 2);
+
+
     }
-
-
   }
 
+  //Fluid Beats ——————————————————————————————————————————————————
+  for (let i = 0; i < 4; i++) {
+    if (Math.random() < 1) {
 
-};
+      let randomRow = getRandomInt(0, vertexPos.length);
+      let randomStart = getRandomInt(0, vertexPos[0].length - 1);
+      let randomEnd;
+
+      do {
+        randomEnd = getRandomInt(0, vertexPos[0].length - 1);
+      } while (randomEnd === randomStart);
+
+
+      
+      const vector: VectorNode = figma.createVector();
+      vector.vectorNetwork = {
+        // The vertices of the triangle
+        vertices: [{
+            x: vertexPos[randomRow][randomStart].x + pillarW / 2,
+            y: vertexPos[randomRow][randomStart].y + pillarW / 2,
+            strokeCap: "ROUND"
+          },
+          {
+            x: vertexPos[randomRow][randomEnd].x + pillarW / 2,
+            y: vertexPos[randomRow][randomEnd].y + pillarW / 2,
+            strokeCap: "ROUND"
+          },
+        ],
+
+        segments: [{
+          start: 0,
+          tangentStart: {
+            x: 0,
+            y: 0
+          }, // optional
+          end: 1,
+          tangentEnd: {
+            x: 0,
+            y: 0
+          }, // optional
+        }],
+
+        regions: [{
+          windingRule: "NONZERO",
+          loops: [
+            [0]
+          ]
+        }],
+      }
+
+      vector.strokeWeight = pillarW;
+
+      vector.strokes = [{
+        type: 'SOLID',
+        color: {
+          r: Number(colorValVector[0]),
+          g: Number(colorValVector[1]),
+          b: Number(colorValVector[2])
+        }
+      }];
+
+      
+      const newV: PolygonNode = vector.outlineStroke();
+      newV.name = "Fluid Beat"
+
+      vector.remove();
+
+      frame.appendChild(newV);
+      nodes.push(newV);
+
+
+      figma.currentPage.selection = nodes;
+      figma.viewport.scrollAndZoomIntoView(nodes);
+
+    } else {};
+  }
+
+  //TODO Get all Beats and push them to the top of the layer list, so they are above the fluid beats
+
+}
 
 
 
