@@ -5,15 +5,17 @@ figma.showUI(__html__, {width: 240, height: 650 });
 const padding = 4;
 const gap = padding / 2;
 
-const pillarW = 12;
-const pillarH = 24;
-
 let bubblePos: any[][] = [];
 let vertexPos: any[] = [];
 
 
 let frame: FrameNode;
 
+let canvasHeight = 0
+let canvasWidth = 0
+
+let oldCanvasHeight = null;
+let oldCanvasWidth = null;
 
 let _rows = 2,
     _cols = 6,
@@ -27,13 +29,13 @@ let beatTresh: number = 0.4;
 figma.ui.onmessage = (msg) => {
 
   if (msg.type == 'rows') {
-    _rows = msg.number;
-    updateCanvas(msg.number, _cols, _colorValPillar, _colorValBubble, _colorValVector);
+    _rows = parseInt(msg.number, 10);
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector);
   }
 
   if (msg.type == 'cols') {
-    _cols = msg.number;
-    updateCanvas(_rows, msg.number, _colorValPillar, _colorValBubble, _colorValVector)
+    _cols = parseInt(msg.number, 10);
+    updateCanvas(_rows, _cols, _colorValPillar, _colorValBubble, _colorValVector)
   }
     
   if (msg.type == 'colorPillar') {
@@ -71,28 +73,63 @@ figma.ui.onmessage = (msg) => {
 
 function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorValBubble: any[], colorValVector: any[]) {
 
-  // Logic for clearing the old Frame ——————————————————————————————————————————————————————————————
-  const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song");
+  // Logic for clearing the old Frame and saving its size ———————————————————————————————————————————
+  const oldFrame = figma.currentPage.findOne(node => node.type === "FRAME" && node.name === "Song-Generator");
 
   if (oldFrame !== null) {
+    oldCanvasWidth = oldFrame.width;
+    oldCanvasHeight = oldFrame.height;
     oldFrame.remove();
-  } else {};
+  } else {
+    oldCanvasWidth = null
+    oldCanvasHeight = null
+  };
 
    // Creating and setting the size of the frame ————————————————————————————————————————————————————
    frame = figma.createFrame();
 
-   let canvasHeight = padding * 2 + rows * pillarH + (rows - 1) * gap;
-   let canvasWidth = padding * 2 + cols * pillarW + (cols - 1) * gap;
-
    frame.x = 0
    frame.y = 0
-   frame.name = "Song"
+   frame.name = "Song-Generator"
    frame.constrainProportions = true;
+
+   if(oldCanvasWidth && oldCanvasHeight) {
+    canvasWidth = oldCanvasWidth
+    canvasHeight = oldCanvasHeight
+
+   } else {
+
+   //TODO: Add input options for aspect ratio
+
+   const ratio: String = "16:9"
+   switch(ratio) {
+    case "1:1":
+      canvasHeight = 800
+      canvasWidth = 800
+      break
+    case "4:3":
+      canvasHeight = 1024
+      canvasWidth = 768
+      break
+    case "16:9":
+      canvasHeight = 1080
+      canvasWidth = 1920
+      break
+   }
+   }
+
    frame.resize(canvasWidth, canvasHeight)
 
        
    // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
   const nodes: SceneNode[] = [];
+
+  const factor = canvasWidth / (6 + 14 * cols)
+  const pillarW = 12 * factor
+  const pillarH = (canvasHeight - (rows + 1) * 4 * factor) / rows
+
+  const verticalGap = 4 * factor
+  const horizontalGap = 2 * factor
 
   for (let i = 0; i < rows; i++) {
 
@@ -102,21 +139,23 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
     for (let l = 0; l < cols; l++) {
 
       //Pillars ——————————————————————————————————————————————————
-      let calcX = l * (pillarW + gap) + padding;
-      let calcY = i * (pillarH + gap) + padding;
-
-      let calcRTop = ((0 + (i + l) * 100) % 200);
-      let calcRBot = ((100 + (i + l) * 100) % 200);
+      let calcX = 4 * factor + l * (pillarW + horizontalGap);
+      let calcY = 4 * factor + i * (pillarH + verticalGap);
 
       const pillar: RectangleNode = figma.createRectangle();
       pillar.resize(pillarW, pillarH);
-      pillar.topLeftRadius = calcRTop;
-      pillar.topRightRadius = calcRTop;
-      pillar.bottomLeftRadius = calcRBot;
-      pillar.bottomRightRadius = calcRBot;
       pillar.x = calcX;
       pillar.y = calcY;
       pillar.name = "Bar";
+
+      if (l % 2 == 0) {
+        pillar.topLeftRadius = 999
+        pillar.topRightRadius = 999
+
+      } else {
+        pillar.bottomLeftRadius = 999
+        pillar.bottomRightRadius = 999
+      }
 
       pillar.fills = [{
         type: 'SOLID',
@@ -133,9 +172,9 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
       //Beats ——————————————————————————————————————————————————
 
       // X und Y positon der Bubbles berechnen
-      let calcBubbleX = l * (gap + pillarW) + padding;
-      let calcBubbleYTop = i * (gap + pillarH) + padding;
-      let calcBubbleYBot = i * (gap + pillarH) + padding + pillarH - pillarW;
+      let calcBubbleX = calcX
+      let calcBubbleYTop = calcY
+      let calcBubbleYBot = calcY + pillarH - pillarW
 
       //X und Y Pos in Object und Arry speichern
       if ((l + i) % 2 == 0) {
@@ -192,6 +231,7 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
   }
 
   //Fluid Beats ——————————————————————————————————————————————————
+  //TODO: Fix position of fluid beats
   for (let i = 0; i < 4; i++) {
     if (Math.random() < 1) {
 
@@ -262,13 +302,13 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
       nodes.push(newV);
 
 
-      figma.currentPage.selection = nodes;
-      figma.viewport.scrollAndZoomIntoView(nodes);
+      //figma.currentPage.selection = nodes;
+      //figma.viewport.scrollAndZoomIntoView(nodes);
 
     } else {};
   }
 
-  //TODO Get all Beats and push them to the top of the layer list, so they are above the fluid beats
+  //TODO: Get all Beats and push them to the top of the layer list, so they are above the fluid beats
 
 }
 
