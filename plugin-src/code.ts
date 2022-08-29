@@ -94,14 +94,11 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
    // Drawing the elements on the frame with loops ——————————————————————————————————————————————————
   const nodes: SceneNode[] = [];
 
+
+  //Pillars ——————————————————————————————————————————————————
   for (let i = 0; i < rows; i++) {
-
-    bubblePos[i] = [];
-    vertexPos[i] = [];
-
     for (let l = 0; l < cols; l++) {
-
-      //Pillars ——————————————————————————————————————————————————
+      
       let calcX = l * (pillarW + gap) + padding;
       let calcY = i * (pillarH + gap) + padding;
 
@@ -128,9 +125,16 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
       }];
       frame.appendChild(pillar);
       nodes.push(pillar);
+    }
+  }
 
+  //Beats ————————————————————————————————————————————————————
+  for (let i = 0; i < rows; i++) {
 
-      //Beats ——————————————————————————————————————————————————
+    bubblePos[i] = [];
+    vertexPos[i] = [];
+
+    for (let l = 0; l < cols; l++) {
 
       // X und Y positon der Bubbles berechnen
       let calcBubbleX = l * (gap + pillarW) + padding;
@@ -167,7 +171,7 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
           }
         }];
 
-        frame.appendChild(bubble);
+        frame.insertChild(rows*cols, bubble);
         nodes.push(bubble);
       } else {};
 
@@ -183,25 +187,23 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
         y: calcBubbleYBot
       });
 
-
-      console.log(vertexPos.length);
-      console.log(vertexPos[0].length / 2);
-
-
     }
   }
 
-  //Fluid Beats ——————————————————————————————————————————————————
-  for (let i = 0; i < 4; i++) {
+  //Fluid Beats ——————————————————————————————————————————————
+  for (let i = 0; i < 1; i++) {
+
     if (Math.random() < 1) {
 
       let randomRow = getRandomInt(0, vertexPos.length);
       let randomStart = getRandomInt(0, vertexPos[0].length - 1);
-      let randomEnd;
 
-      do {
-        randomEnd = getRandomInt(0, vertexPos[0].length - 1);
-      } while (randomEnd === randomStart);
+      let randomEnd = getRandomInt(randomStart + 1, vertexPos[0].length - 1);
+      
+
+      // do {
+      //   randomEnd = getRandomInt(0, vertexPos[0].length - 1);
+      // } while (randomEnd === randomStart);
 
 
       
@@ -218,25 +220,30 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
             y: vertexPos[randomRow][randomEnd].y + pillarW / 2,
             strokeCap: "ROUND"
           },
+          {
+            x: vertexPos[randomRow][randomEnd+2].x + pillarW / 2,
+            y: vertexPos[randomRow][randomEnd+2].y + pillarW / 2,
+            strokeCap: "ROUND"
+          },
         ],
 
-        segments: [{
+        segments: [
+          {
           start: 0,
-          tangentStart: {
-            x: 0,
-            y: 0
-          }, // optional
+          tangentStart: { x: 0, y: 0 }, // optional
           end: 1,
-          tangentEnd: {
-            x: 0,
-            y: 0
-          }, // optional
-        }],
+          tangentEnd: { x: 0, y: 0 }, // optional
+        },
+        {
+          start: 1,
+          end: 2,
+        },    
+      ],
 
         regions: [{
           windingRule: "NONZERO",
           loops: [
-            [0]
+            [0, 1]
           ]
         }],
       }
@@ -258,7 +265,8 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
 
       vector.remove();
 
-      frame.appendChild(newV);
+      frame.insertChild(rows*cols, newV)
+
       nodes.push(newV);
 
 
@@ -268,10 +276,7 @@ function updateCanvas (rows: number, cols: number, colorValPillar: any[], colorV
     } else {};
   }
 
-  //TODO Get all Beats and push them to the top of the layer list, so they are above the fluid beats
-
 }
-
 
 
 

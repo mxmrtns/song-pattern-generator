@@ -11,7 +11,7 @@ import ButtonClass from "./modules/ButtonClass";
 import Button from "./modules/Button";
 import Stepper from "./modules/stepper";
 
-
+import { COLORS } from "./constants/enums";
 
 import P5Component from './p5Sketch'
 
@@ -33,17 +33,19 @@ function App() {
       </div>
       <div className="container col">
         <label for="colorPillar">Color Pillar</label>
-        <ColorSelect msgtype='colorPillar' value='0.27 0 0.45'/>
+        <ColorSelect msgtype='colorPillar' value={COLORS.PURPLE_NOISE}/>
       </div>
       <div className="container col">
         <label for="colorPillar">Color Bubble</label>
-        <ColorSelect msgtype='colorBubble' value='0.439 0.298 0.996'/>
+        <ColorSelect msgtype='colorBubble' value={COLORS.REVERB_BLUE}/>
       </div>
       <div className="container col">
         <label for="colorPillar">Color Vector</label>
-        <ColorSelect msgtype='colorVector' value='0.945 0.337 0.137'/>
+        <ColorSelect msgtype='colorVector' value={COLORS.ORANGE_FUZZ}/>
       </div>
 
+
+      
       
 
 

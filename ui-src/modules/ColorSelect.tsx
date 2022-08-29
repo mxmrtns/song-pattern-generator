@@ -2,6 +2,8 @@
 import React from "react";
 import classNames from "classnames";
 
+import { COLORS } from "../constants/enums";
+
 class ColorSelect
   extends React.Component<any, any> {
 
@@ -48,12 +50,12 @@ class ColorSelect
           </div>
 
           <select name="colorPillar" id="colorPillar" value={this.state.value} onInput={this.handleChange}>
-            <option value='0.439 0.298 0.996'>Reverb Blue</option>
-            <option value="0.925 0.89 0.815">Vanila Phaser</option>
-            <option value="0.945 0.337 0.137">Orange Fuzz</option>
-            <option value='0.27 0 0.45'>Purple Noise</option>
-            <option value="0.803 0.619 0.235">Gold Tuner</option>
-            <option value="0 0 0">Black</option>
+            <option value={COLORS.REVERB_BLUE}>Reverb Blue</option>
+            <option value={COLORS.VANILLA_PHASER}>Vanila Phaser</option>
+            <option value={COLORS.ORANGE_FUZZ}>Orange Fuzz</option>
+            <option value={COLORS.PURPLE_NOISE}>Purple Noise</option>
+            <option value={COLORS.GOLD_TUNER}>Gold Tuner</option>
+            <option value={COLORS.BLACK}>Black</option>
           </select>
 
         </div> 
